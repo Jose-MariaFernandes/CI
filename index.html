@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registro de CI's</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px auto;
+      max-width: 600px;
+      line-height: 1.6;
+    }
+    h1, h2 {
+      text-align: center;
+      color: #333;
+    }
+    form {
+      background: #f9f9f9;
+      padding: 20px;
+      border-radius: 5px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    label {
+      font-weight: bold;
+      display: block;
+      margin-top: 10px;
+    }
+    input, select, textarea, button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    input[readonly]::placeholder {
+      color: #aaa;
+      font-style: italic;
+    }
+    button {
+      background-color: #5cb85c;
+      color: white;
+      font-size: 16px;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #4cae4c;
+    }
+    .required::after {
+      content: " *";
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <h1>Registro de CI's</h1>
+  <p>Este formulário é utilizado para o registro das CI's enviadas no decorrer do ano.</p>
+
+  <form id="formCI">
+    <h2>Registro de CI's</h2>
+    <label class="required" for="nomeFuncionario">Nome do Funcionário</label>
+    <select id="nomeFuncionario" name="nomeFuncionario" required>
+      <option value="">Selecione</option>
+      <option value="Danilo da Silva Santos">Danilo da Silva Santos</option>
+      <option value="Jose Paulo Eduardo de Oliveira">Jose Paulo Eduardo de Oliveira</option>
+    </select>
+
+    <h2>Dados da CI</h2>
+    <label class="required" for="tituloCI">Título da CI</label>
+    <select id="tituloCI" name="tituloCI" required>
+      <option value="Atestados">Atestados</option>
+	  <option value="Afastamento para Cuidar de Familiar">Afastamento para Cuidar de Familiar</option>
+      <option value="Avaliação de Desempenho (Efetivo)">Avaliação de Desempenho (Efetivo)</option>
+      <option value="Avaliação de Funcionário (Terceirizado)">Avaliação de Funcionário (Terceirizado)</option>
+      <option value="Avaliação Estagiário CONECT">Avaliação Estagiário CONECT</option>
+      <option value="Banco de Horas">Banco de Horas</option>
+      <option value="Compensação de Horas">Compensação de Horas</option>
+      <option value="Consumo de Gás">Consumo de Gás</option>
+      <option value="Declarações Médicas">Declarações Médicas</option>
+      <option value="Devolutiva Avaliação de Desempenho">Devolutiva Avaliação de Desempenho</option>
+      <option value="Entrega do PPP">Entrega do PPP</option>
+      <option value="Envio para Supervisão">Envio para Supervisão</option>
+      <option value="Nota Fiscal SEFE">Nota Fiscal SEFE</option>
+      <option value="Programação de Férias">Programação de Férias</option>
+      <option value="Programação de Folga TRE">Programação de Folga TRE</option>
+      <option value="Programação de Licença Prêmio">Programação de Licença Prêmio</option>
+      <option value="Quadro Escolar Projeção">Quadro Escolar Projeção</option>
+      <option value="Solicitação de Barracas P/Festa Junina">Solicitação de Barracas P/Festa Junina</option>
+      <option value="Solicitação de Cópias">Solicitação de Cópias</option>
+	  <option value="Solicitação Diversas">Solicitação Diversas</option>
+      <option value="Solicitação de Poda de Árvore">Solicitação de Poda de Árvore</option>
+      <option value="Solicitação de Ronda da GM P/Festa Junina">Solicitação de Ronda da GM P/Festa Junina</option>
+      <option value="Solicitação de Uniformes">Solicitação de Uniformes</option>
+      <option value="Substituição Temporária">Substituição Temporária</option>
+    </select>
+    </select>
+
+    <label class="required" for="numeroCI">Número da CI</label>
+    <input type="text" id="numeroCI" name="numeroCI" readonly placeholder="Será preenchido automaticamente" required>
+
+    <label class="required" for="dataCI">Data da CI</label>
+    <input type="date" id="dataCI" name="dataCI" required>
+
+    <label class="required" for="numeroSisgep">Número do SISGEP</label>
+    <input type="text" id="numeroSisgep" name="numeroSisgep" maxlength="19" required>
+
+    <h2>Observações do SISGEP</h2>
+    <label class="required" for="observacoesCI">Observações sobre a CI</label>
+    <textarea id="observacoesCI" name="observacoesCI" rows="4" required></textarea>
+
+    <button type="submit">Enviar</button>
+  </form>
+
+  <script>
+    const apiUrl = "https://script.google.com/macros/s/AKfycbzQ1GPfAoacg7rlQDdy0K228By77lT0Y2ef2asa1szPkjwTcSXg5FGDsU9uq5Xy1NKt/exec";
+
+    async function preencherNumeroCI() {
+      try {
+        const response = await fetch(apiUrl);
+        if (!response.ok) throw new Error("Erro ao acessar a API");
+        const numeroSequencial = await response.json();
+
+        // Formata o número da CI como "XXX/AAAA"
+        const anoAtual = new Date().getFullYear();
+        const numeroFormatado = `${String(numeroSequencial).padStart(3, "0")}/${anoAtual}`;
+
+        document.getElementById("numeroCI").value = numeroFormatado;
+      } catch (error) {
+        console.error("Erro ao carregar o número da CI:", error);
+        alert("Não foi possível obter o número da CI. Tente novamente mais tarde.");
+      }
+    }
+
+    preencherNumeroCI();
+
+    document.getElementById("numeroSisgep").addEventListener("input", (event) => {
+      const input = event.target;
+      let value = input.value.replace(/\D/g, ""); // Remove todos os caracteres não numéricos
+      const formattedValue = value.replace(/^(\d{3})(\d{3})(\d{3})(\d{3})(\d{3})$/, "$1.$2.$3.$4.$5");
+      input.value = formattedValue;
+    });
+
+    document.getElementById("formCI").addEventListener("submit", (event) => {
+      event.preventDefault();
+      const formData = new FormData(event.target);
+      const dados = Object.fromEntries(formData.entries());
+      console.log("Dados do formulário:", dados);
+
+      alert("Formulário enviado com sucesso!");
+      event.target.reset();
+      preencherNumeroCI();
+    });
+  </script>
+</body>
+</html>
